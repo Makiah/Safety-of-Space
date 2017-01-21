@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 2f27f4507e8cb4f518f4664dd61b342f
+timeCreated: 1484932889
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Cash Currency
+  fontNames:
+  - Cash Currency
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

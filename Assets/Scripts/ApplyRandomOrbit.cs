@@ -5,10 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class ApplyRandomOrbit : MonoBehaviour 
 {
-	[SerializeField] private float maxSpeed = 1;
+	[SerializeField] private float maxSpeed = 10, minSpeed = 3;
 
 	void Start()
 	{
-		GetComponent <Rigidbody2D> ().angularVelocity = (Random.value * 2 - 1) * maxSpeed;
+		GetComponent <Rigidbody2D> ().angularVelocity = (Random.value * minSpeed - minSpeed / 2f) * maxSpeed;
 	}
 }
