@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Upgradable : MonoBehaviour 
+public class Upgradeable : MonoBehaviour 
 {
 }

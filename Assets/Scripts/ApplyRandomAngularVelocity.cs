@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class ApplyRandomOrbit : MonoBehaviour 
+public class ApplyRandomAngularVelocity : MonoBehaviour 
 {
 	[SerializeField] private float maxSpeed = 10, minSpeed = 3;
 

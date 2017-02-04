@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BattleSide))]
+[RequireComponent(typeof(OrbitOther))]
 public class Directable : MonoBehaviour 
 {
 	[SerializeField] private float moveSpeed = 3, stopDistance = 3;
 
 	private IEnumerator moveToCoroutine = null;
+
+	public Tappable targetDestination;
 
 	public void DirectTo (Tappable target)
 	{
@@ -14,29 +18,37 @@ public class Directable : MonoBehaviour
 			GetComponent <OrbitOther> ().Deorbit ();
 
 		if (moveToCoroutine != null)
+		{
+			targetDestination = null;
 			StopCoroutine (moveToCoroutine);
-		
-		moveToCoroutine = MoveTo (target);
+		}
+
+		targetDestination = target;
+
+		moveToCoroutine = MoveTo (targetDestination);
 		StartCoroutine (moveToCoroutine);
 	}
 
 	private IEnumerator MoveTo(Tappable target)
 	{
-		while (Vector3.Distance(target.transform.position, transform.position) > stopDistance)
+		while (target != null)
 		{
-			//Update position
-			Vector3 diff = target.transform.position - transform.position;
-			Vector3 movement = diff.normalized;
-			movement *= moveSpeed;
-			transform.position += movement;
+			//Move based on calculated values.  
+			Vector3 targetPosition = target.transform.position;
+			Vector3 diff = targetPosition - transform.position;
 
-			//Update heading.  
-			transform.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg + 90);
+			if (Vector3.Distance (targetPosition, transform.position) > stopDistance)
+			{
+				//Update position
+				Vector3 movement = diff.normalized;
+				movement *= moveSpeed;
+				transform.position += movement;
+			}
+
+			//Update heading regardless of distance from ideal position.  
+			transform.localEulerAngles = new Vector3 (0, 0, Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg + 90);
 
 			yield return null;
 		}
-
-		if (GetComponent <OrbitOther> () != null)
-			GetComponent <OrbitOther> ().Orbit (target.transform);
 	}
 }

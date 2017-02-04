@@ -13,6 +13,8 @@ public class SelectionUI : MonoBehaviour
 
 	private Tappable tappable;
 
+	private float lastPressOnNothingness;
+
 	public void GotMouseDownOn(Tappable tappable)
 	{
 		if (this.tappable == null)
@@ -33,23 +35,28 @@ public class SelectionUI : MonoBehaviour
 		{
 			if (tappable.gameObject.name.Equals ("Nothingness"))
 			{
-				Debug.Log ("Resetting camera view after nothingness clicked.");
-				CameraMovement.instance.Decenter ();
-				Deinit ();
+				if (Time.time - lastPressOnNothingness < .300) //Only zoom out after a double tap.  
+				{
+					Debug.Log ("Resetting camera view after nothingness double clicked.");
+					CameraMovement.instance.Decenter ();
+					Deinit ();
+				}
+				lastPressOnNothingness = Time.time;
+
 				return;
 			}
 
 			if (tappableBeingDirected)
 			{
-				this.tappable.directableComp.DirectTo (tappable);
-				Deinit ();
+				if (this.tappable != tappable)
+					this.tappable.directableComp.DirectTo (tappable);
 			}
 			else if (tappableBeingUpgraded)
 			{
 				Debug.Log ("Not yet implemented");
-				Deinit ();
 			}
-			
+
+			Deinit (); //Resets all booleans and other such stuff.  
 		}
 	}
 
@@ -57,6 +64,7 @@ public class SelectionUI : MonoBehaviour
 	public void Deinit()
 	{
 		userOutput.text = "";
+		userOutput.gameObject.SetActive (false);
 		directable.gameObject.SetActive (false);
 		upgradable.gameObject.SetActive (false);
 
@@ -69,6 +77,7 @@ public class SelectionUI : MonoBehaviour
 	public void OnDirectClicked()
 	{
 		upgradable.gameObject.SetActive (false);
+		userOutput.gameObject.SetActive (true);
 		userOutput.text = "Tap on object that this object will be directed to.";
 		tappableBeingDirected = true;
 		CameraMovement.instance.Decenter ();
@@ -78,6 +87,7 @@ public class SelectionUI : MonoBehaviour
 	public void OnUpgradeClicked()
 	{
 		directable.gameObject.SetActive (false);
+		userOutput.gameObject.SetActive (true);
 		userOutput.text = "Choose the appropriate upgrade";
 		tappableBeingUpgraded = true;
 		//Place upgrade code stuff here

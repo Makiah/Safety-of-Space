@@ -6,15 +6,15 @@ using UnityEngine.EventSystems;
 public class Tappable : MonoBehaviour 
 {
 	[HideInInspector] public Directable directableComp;
-	[HideInInspector] public Upgradable upgradableComp;
+	[HideInInspector] public Upgradeable upgradableComp;
 
 	//Get all component references.  
 	void Start()
 	{
 		if (GetComponent <Directable> () != null)
 			directableComp = GetComponent <Directable> ();
-		if (GetComponent <Upgradable> () != null)
-			upgradableComp = GetComponent <Upgradable> ();
+		if (GetComponent <Upgradeable> () != null)
+			upgradableComp = GetComponent <Upgradeable> ();
 	}
 
 	//YAS 2D MODE FOR DA WINNNN

@@ -6,13 +6,14 @@ public class OrbitOther : MonoBehaviour
 {
 	[SerializeField] private Transform orbitTransform = null;
 	[SerializeField] private float speed = 1, xAxis = 3, yAxis = 2;
-	[SerializeField] private bool clockwise;
+	[SerializeField] private bool clockwise = false;
 
 	private float currentDegree;
 
 	void Start()
 	{
-		Orbit (orbitTransform);
+		if (orbitTransform != null)
+			Orbit (orbitTransform);
 	}
 
 	public void Orbit(Transform other) 
