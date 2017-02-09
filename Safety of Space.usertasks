@@ -1,0 +1,6 @@
+<ListOfTask>
+  <Task file="" description="Create field of vision in which the player is restricted to look (centered on the space station)" />
+  <Task file="" description="Create spawn controls that initialize consistently more difficult levels, at the edge of the player's field of vision.  " />
+  <Task file="" description="Create upgrade menu (prelim)" />
+  <Task file="" description="Create radar.  " />
+</ListOfTask>

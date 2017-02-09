@@ -25,11 +25,11 @@ public class Directable : MonoBehaviour
 
 		targetDestination = target;
 
-		moveToCoroutine = MoveTo (targetDestination);
+		moveToCoroutine = Follow (targetDestination);
 		StartCoroutine (moveToCoroutine);
 	}
 
-	private IEnumerator MoveTo(Tappable target)
+	private IEnumerator Follow(Tappable target)
 	{
 		while (target != null)
 		{

@@ -9,6 +9,7 @@ public class ApplyRandomAngularVelocity : MonoBehaviour
 
 	void Start()
 	{
-		GetComponent <Rigidbody2D> ().angularVelocity = (Random.value * minSpeed - minSpeed / 2f) * maxSpeed;
+		//1 in 2 chance of being negative, same with positive.  
+		GetComponent <Rigidbody2D> ().angularVelocity = Random.Range (minSpeed, maxSpeed) * (Random.Range (0, 2) == 0 ? 1 : -1);
 	}
 }

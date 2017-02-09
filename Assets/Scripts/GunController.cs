@@ -4,7 +4,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(Directable))]
 [RequireComponent(typeof(BattleSide))]
-public class FireWhenWithinRange : MonoBehaviour 
+
+public class GunController : MonoBehaviour 
 {
 	[SerializeField] private float fireDelay = 1, fireRange = 1, fireDamage = 1, fireSpeed = 1;
 	[SerializeField] private GameObject firePrefab;
