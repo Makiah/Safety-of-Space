@@ -27,6 +27,6 @@ public class GameController : MonoBehaviour
 		instantiatedFleetShip.GetComponent <OrbitOther> ().Orbit (instantiatedSpaceStation.transform);
 
 		//Instantiate an example hazard a little ways away.  
-		GameObject instantiatedHazard = (GameObject) (Instantiate(hazard, new Vector3(-5, 5, 0), Quaternion.identity));
+		GameObject instantiatedHazard = (GameObject) (Instantiate(hazard, new Vector3(-100, 100, 0), Quaternion.identity));
 	}
 }

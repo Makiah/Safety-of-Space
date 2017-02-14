@@ -8,54 +8,72 @@ public class ChoicePanel : MonoBehaviour
 	public static ChoicePanel instance;
 	void Awake() {instance = this;}
 
+	class Choice
+	{
+		public GameObject objectComp;
+		public Button buttonComp;
+		public Text textComp;
+		public Slider sliderComp;
+
+		public Choice(Transform other)
+		{
+			objectComp = other.gameObject;
+			if (other.FindChild("Upgrade") != null)
+				buttonComp = other.FindChild("Upgrade").GetComponent <Button> ();
+			if (other.FindChild("Text") != null)
+				textComp = other.FindChild("Text").GetComponent <Text> ();
+			if (other.FindChild("Slider") != null)
+				sliderComp = other.FindChild("Slider").GetComponent <Slider> ();
+		}
+	}
+
 	//The many required components for future reference.  
-	private Button targetingB, moveSpeedB, shieldingB, fireSpeedB, fireDamageB, directToB;
-	private Slider targetingS, moveSpeedS, shieldingS, fireSpeedS, fireDamageS, directToS;
+	private Choice targeting, shielding, moveSpeed, fireSpeed, fireDamage, directTo;
+	private Choice[] choiceArray;
 
 	void Start()
 	{
 		//Get ALL references.  
-		targetingB = transform.FindChild("Targeting").FindChild("Upgrade").GetComponent <Button> ();
-		targetingS = transform.FindChild("Targeting").FindChild("Slider").GetComponent <Slider> ();
+		targeting = new Choice(transform.FindChild("Targeting"));
+		moveSpeed = new Choice (transform.FindChild ("Move Speed"));
+		shielding = new Choice (transform.FindChild ("Shielding"));
+		fireSpeed = new Choice (transform.FindChild ("Fire Speed"));
+		fireDamage = new Choice (transform.FindChild ("Fire Damage"));
+		directTo = new Choice (transform.FindChild ("Direct To"));
 
-		moveSpeedB = transform.FindChild("Move Speed").FindChild("Upgrade").GetComponent <Button> ();
-		moveSpeedS = transform.FindChild("Move Speed").FindChild("Slider").GetComponent <Slider> ();
-
-		shieldingB = transform.FindChild("Shielding").FindChild("Upgrade").GetComponent <Button> ();
-		shieldingS = transform.FindChild("Shielding").FindChild("Slider").GetComponent <Slider> ();
-
-		fireSpeedB = transform.FindChild("Fire Speed").FindChild("Upgrade").GetComponent <Button> ();
-		fireSpeedS = transform.FindChild("Fire Speed").FindChild("Slider").GetComponent <Slider> ();
-
-		fireDamageB = transform.FindChild("Fire Damage").FindChild("Upgrade").GetComponent <Button> ();
-		fireDamageS = transform.FindChild("Fire Damage").FindChild("Slider").GetComponent <Slider> ();
-
-		directToB = transform.FindChild("Direct To").FindChild("Upgrade").GetComponent <Button> ();
-		directToS = transform.FindChild("Direct To").FindChild("Slider").GetComponent <Slider> ();
+		//Create the array for future ease of coding.  
+		choiceArray = new Choice[] {targeting, shielding, moveSpeed, fireSpeed, fireDamage, directTo};
 
 		DisableAllActions ();
 	}
 
-	void DisableAllActions()
+	private void DisableAllActions()
 	{
-		targetingB.gameObject.SetActive (false);
-		targetingS.gameObject.SetActive (false);
-
-		moveSpeedB.gameObject.SetActive (false);
-		moveSpeedS.gameObject.SetActive (false);
-
-		shieldingB.gameObject.SetActive (false);
-		shieldingS.gameObject.SetActive (false);
-
-		fireSpeedB.gameObject.SetActive (false);
-		fireSpeedS.gameObject.SetActive (false);
-
-		fireDamageB.gameObject.SetActive (false);
-		fireDamageS.gameObject.SetActive (false);
-
-		directToB.gameObject.SetActive (false);
-		directToS.gameObject.SetActive (false);
+		foreach (Choice choice in choiceArray)
+			choice.objectComp.SetActive (false);
   	}
+
+	private void UpdateUpgradeCosts()
+	{
+		for (int i = 0; i < choiceArray.Length; i++)
+		{
+			if (choiceArray [i].textComp != null)
+			{
+				choiceArray [i].textComp.text = "" + (Mathf.Pow (5, currentlySelected.GetComponent <Upgradeable> ().upgradeSelections [i]));
+			}
+		}
+	}
+
+	private void UpdateUpgradeSliders()
+	{
+		for (int i = 0; i < choiceArray.Length; i++)
+		{
+			if (choiceArray [i].sliderComp != null)
+			{
+				choiceArray [i].sliderComp.value = (currentlySelected.GetComponent <Upgradeable> ().upgradeSelections [i] * 1.0f) / currentlySelected.GetComponent <Upgradeable> ().maxUpgradesForItem [i];
+			}
+		}
+	}
 
 	float lastTapOnNothingness = 0;
 	private Tappable currentlySelected = null;
@@ -65,12 +83,14 @@ public class ChoicePanel : MonoBehaviour
 		//Make sure that the user didn't just click on the background.  
 		if (other.gameObject.name.Equals ("Nothingness"))
 		{
-			//If we just double-tapped on nothingness.  
+			//If we just double-tapped on nothingness, return the camera to its usual position.  
 			if (Time.time - lastTapOnNothingness < .5f)
 			{
 				CameraMovement.instance.Decenter ();
 				DisableAllActions ();
 				UserConsole.instance.Output ("");
+				currentlyDirecting = false;
+				currentlySelected = null;
 			}
 
 			lastTapOnNothingness = Time.time;
@@ -97,63 +117,98 @@ public class ChoicePanel : MonoBehaviour
 
 		//Set each component active depending on whether or not it has the required components.  
 		//Make sure that the upgradeable component exists on this item first.  .  
+		currentlySelected = other;
+
 		if (other.gameObject.GetComponent <Upgradeable> () != null)
 		{
-			shieldingB.gameObject.SetActive (true);
-			shieldingS.gameObject.SetActive (true);
+			UpdateUpgradeCosts ();
+			UpdateUpgradeSliders ();
+
+			if (other.gameObject.GetComponent <Damageable> () != null)
+			{
+				shielding.objectComp.SetActive (true);
+			}
 
 			if (other.gameObject.GetComponent <Directable> () != null)
 			{
-				directToB.gameObject.SetActive (true);
-				directToS.gameObject.SetActive (true);
+				moveSpeed.objectComp.SetActive (true);
 			}
 
 			if (other.gameObject.GetComponent <GunController> () != null)
 			{
-				targetingB.gameObject.SetActive (true);
-				targetingS.gameObject.SetActive (true);
-
-				fireSpeedB.gameObject.SetActive (true);
-				fireSpeedS.gameObject.SetActive (true);
-
-				fireDamageB.gameObject.SetActive (true);
-				fireDamageS.gameObject.SetActive (true);
+				targeting.objectComp.SetActive (true);
+				fireSpeed.objectComp.SetActive (true);
+				fireDamage.objectComp.SetActive (true);
 			}
 		}
-		else if (other.gameObject.GetComponent <Directable> () != null)
+	
+		if (other.gameObject.GetComponent <Directable> () != null)
 		{
-			directToB.gameObject.SetActive (true);
-			directToS.gameObject.SetActive (true);
+			directTo.objectComp.SetActive (true);
 		}
-
-		currentlySelected = other;
 	}
 
 	/************** Upgrade choice options *****************/
 
+	private bool CompletePrelimUpgradeStuff(int choice)
+	{
+		//Make sure that this component can be upgraded (hasn't reached max upgrades.  
+		if (currentlySelected.GetComponent <Upgradeable> ().upgradeSelections [choice] >= currentlySelected.GetComponent <Upgradeable> ().maxUpgradesForItem [choice])
+			return false;
+
+		//Determine the cost and make sure that the purchase can be made before making it.  Then update the cost of the new upgrade.  
+		int cost = int.Parse(choiceArray[choice].textComp.text);
+		if (!ResourceController.instance.ChangeBy (-cost))
+			return false;
+		currentlySelected.GetComponent <Upgradeable> ().upgradeSelections [choice]++;
+		UpdateUpgradeCosts ();
+		UpdateUpgradeSliders ();
+
+		return true; //Only return true if everything else went without a hitch.  
+	}
+
 	public void OnTargetingChosen()
 	{
-		
+		if (!CompletePrelimUpgradeStuff (0))
+			return;
+
+		//Now do the actual upgrade thingamajig.  
 	}
 
 	public void OnShieldingChosen()
 	{
+		if (!CompletePrelimUpgradeStuff (1))
+			return;
 
+		//Now do the actual upgrade thingamajig.  
+		currentlySelected.GetComponent <Damageable> ().armorStrength++;
 	}
 
 	public void OnMoveSpeedChosen()
 	{
+		if (!CompletePrelimUpgradeStuff (2))
+			return;
 
+		//Now do the actual upgrade thingamajig.  
+		currentlySelected.GetComponent <Directable> ().moveSpeed++;
 	}
 
 	public void OnFireSpeedChosen()
 	{
+		if (!CompletePrelimUpgradeStuff (3))
+			return;
 
+		//Now do the actual upgrade thingamajig.  
+		currentlySelected.GetComponent <GunController> ().fireDelay /= 2.0f;
 	}
 
 	public void OnFireDamageChosen()
 	{
+		if (!CompletePrelimUpgradeStuff (4))
+			return;
 
+		//Now do the actual upgrade thingamajig.  
+		currentlySelected.GetComponent <GunController> ().fireDamage++;
 	}
 
 	private bool currentlyDirecting = false;

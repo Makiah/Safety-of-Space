@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class Damageable : MonoBehaviour 
 {
 	public float currentHealth;
-	private float maxHealth;
+	public float maxHealth;
+	public float armorStrength = 1;
 
 	[SerializeField] private bool useHealthBar;
 	[SerializeField] private GameObject healthBarPrefab;
@@ -26,7 +27,7 @@ public class Damageable : MonoBehaviour
 
 	public void Damaged(float damage)
 	{
-		currentHealth -= damage;
+		currentHealth -= damage / armorStrength;
 
 		Debug.Log ("Deducted damage for total of " + currentHealth);
 

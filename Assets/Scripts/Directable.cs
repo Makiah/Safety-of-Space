@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(OrbitOther))]
 public class Directable : MonoBehaviour 
 {
-	[SerializeField] private float moveSpeed = 3, stopDistance = 3;
+	[HideInInspector] public float moveSpeed = 3, stopDistance = 3;
 
 	private IEnumerator moveToCoroutine = null;
 

@@ -6,5 +6,11 @@ using UnityEngine.EventSystems;
 public class Upgradeable : MonoBehaviour 
 {
 	//Option selection array.  
-	private int[] upgradeSelections = new int[6];
+	[HideInInspector] public int[] upgradeSelections = new int[6];
+	[HideInInspector] public int[] maxUpgradesForItem; //Have to include the direct to component (the 0 value).  
+
+	void Awake() 
+	{
+		maxUpgradesForItem = new int[6] { 6, 6, 6, 6, 6, 0 };
+	}
 }

@@ -20,8 +20,16 @@ public class ResourceController : MonoBehaviour
 		return int.Parse (resourceText.text);
 	}
 
-	public void ChangeBy(int change)
+	public bool ChangeBy(int change)
 	{
-		resourceText.text = "" + (int.Parse (resourceText.text) + change);
+		if (GetAvailable() + change >= 0)
+		{
+			resourceText.text = "" + (int.Parse (resourceText.text) + change);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

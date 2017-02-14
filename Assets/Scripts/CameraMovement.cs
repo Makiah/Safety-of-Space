@@ -7,11 +7,16 @@ public class CameraMovement : MonoBehaviour
 	public static CameraMovement instance;
 	void Awake() {instance = this;}
 
-	Tappable centeredOn;
+	private Tappable centeredOn;
 
 	private Vector3 resetPosition = new Vector3 (0, 0, -10);
 
 	private IEnumerator lerpToZCoroutine = null;
+
+	public bool IsCenteredOn()
+	{
+		return centeredOn != null;
+	}
 
 	public void CenterOn(Tappable other)
 	{

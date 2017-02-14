@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour 
 {
-	[SerializeField] private float fireDelay = 1, fireRange = 1, fireDamage = 1, fireSpeed = 1;
+	[HideInInspector] public float fireDelay = 1, fireRange = 1, fireDamage = 1, fireSpeed = 1;
 	[SerializeField] private GameObject firePrefab;
 	private Directable directableComp;
 	private Transform rangeTransform, fireTransform;
