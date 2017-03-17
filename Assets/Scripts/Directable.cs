@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BattleSide))]
-[RequireComponent(typeof(OrbitOther))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Directable : MonoBehaviour 
 {
-	[HideInInspector] public float moveSpeed = 3, stopDistance = 3;
+	[SerializeField] public float thrustPower = 2, maxSpeed = 15, stopDistance = 2;
 
 	private IEnumerator moveToCoroutine = null;
 
-	public Tappable targetDestination;
+	[HideInInspector] public Tappable targetDestination; //As unnecessary as this may seem, keep it in since it is used by GunController.  
+
+	private Rigidbody2D rb2d;
+
+	void Awake()
+	{
+		rb2d = GetComponent <Rigidbody2D> ();
+	}
 
 	public void DirectTo (Tappable target)
 	{
@@ -25,24 +32,36 @@ public class Directable : MonoBehaviour
 
 		targetDestination = target;
 
-		moveToCoroutine = Follow (targetDestination);
+		moveToCoroutine = DirectToCoroutine ();
 		StartCoroutine (moveToCoroutine);
 	}
 
-	private IEnumerator Follow(Tappable target)
+	private IEnumerator DirectToCoroutine()
 	{
-		while (target != null)
+		while (targetDestination != null)
 		{
 			//Move based on calculated values.  
-			Vector3 targetPosition = target.transform.position;
-			Vector3 diff = targetPosition - transform.position;
+			Vector2 targetPosition = new Vector2(targetDestination.transform.position.x, targetDestination.transform.position.y);
+			Vector2 diff = targetPosition - new Vector2(transform.position.x, transform.position.y);
 
-			if (Vector3.Distance (targetPosition, transform.position) > stopDistance)
+			if (Vector2.Distance (targetPosition, transform.position) > stopDistance)
 			{
-				//Update position
-				Vector3 movement = diff.normalized;
-				movement *= moveSpeed;
-				transform.position += movement;
+				//Update velocity (make sure not to go over the max velocity)
+				Vector2 thrustVector = diff.normalized * thrustPower;
+
+				if ((rb2d.velocity + thrustVector).magnitude <= maxSpeed)
+				{
+					rb2d.AddForce (thrustVector);
+				}
+				else
+				{
+					rb2d.velocity = (rb2d.velocity + thrustVector).normalized * maxSpeed;
+				}
+			}
+			else
+			{
+				
+				rb2d.velocity *= 0.95f;
 			}
 
 			//Update heading regardless of distance from ideal position.  
@@ -50,5 +69,10 @@ public class Directable : MonoBehaviour
 
 			yield return null;
 		}
+	}
+
+	public bool IsBeingDirected()
+	{
+		return moveToCoroutine == null;
 	}
 }

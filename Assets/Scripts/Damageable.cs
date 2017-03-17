@@ -13,23 +13,27 @@ public class Damageable : MonoBehaviour
 	[SerializeField] private GameObject healthBarPrefab;
 
 	private GameObject healthBar;
+	private Rigidbody2D rb2d;
 
-	void Start()
+	void Awake()
 	{
 		maxHealth = currentHealth;
 		if (useHealthBar)
 		{
-			healthBar = (GameObject) (Instantiate(healthBarPrefab, Vector3.zero, Quaternion.identity));
-			healthBar.GetComponent <FollowTransform> ().Follow (transform);
-			healthBar.GetComponent <FollowTransform> ().SetOffset(new Vector3(0, 0, 0));
+			healthBar = (GameObject)(Instantiate (healthBarPrefab, Vector3.zero, Quaternion.identity, transform));
+			healthBar.transform.localPosition = Vector3.zero;
 		}
+
+		rb2d = GetComponent <Rigidbody2D> ();
 	}
 
-	public void Damaged(float damage)
+	public void Damaged(float damage, Rigidbody2D otherRigidbody)
 	{
 		currentHealth -= damage / armorStrength;
 
-		Debug.Log ("Deducted damage for total of " + currentHealth);
+		Vector3 forceToBeApplied = (rb2d.velocity - otherRigidbody.velocity * otherRigidbody.mass) / rb2d.mass;
+
+		rb2d.AddForce (forceToBeApplied);
 
 		if (currentHealth <= 0)
 		{

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour 
 {
-	[HideInInspector] public float fireDelay = 1, fireRange = 1, fireDamage = 1, fireSpeed = 1;
+	public float fireDelay = 1, fireRange = 1, fireDamage = 1, fireForce = 1;
 	[SerializeField] private GameObject firePrefab;
 	private Directable directableComp;
 	private Transform rangeTransform, fireTransform;
@@ -68,7 +68,7 @@ public class GunController : MonoBehaviour
 							{
 								Vector2 diff = damageableComp.gameObject.transform.position - transform.position;
 								instantiatedPrefab.transform.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90);
-								instantiatedPrefab.GetComponent <Rigidbody2D> ().AddRelativeForce(new Vector3 (0, fireSpeed, 0));
+								instantiatedPrefab.GetComponent <Rigidbody2D> ().AddRelativeForce(new Vector3 (0, fireForce, 0));
 								instantiatedPrefab.GetComponent <DamageOnContact> ().SetDamage (fireDamage);
 							}
 						}

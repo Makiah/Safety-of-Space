@@ -128,7 +128,7 @@ public class ChoicePanel : MonoBehaviour
 			{
 				shielding.objectComp.SetActive (true);
 			}
-
+		
 			if (other.gameObject.GetComponent <Directable> () != null)
 			{
 				moveSpeed.objectComp.SetActive (true);
@@ -136,9 +136,13 @@ public class ChoicePanel : MonoBehaviour
 
 			if (other.gameObject.GetComponent <GunController> () != null)
 			{
-				targeting.objectComp.SetActive (true);
 				fireSpeed.objectComp.SetActive (true);
 				fireDamage.objectComp.SetActive (true);
+			}
+
+			if (other.gameObject.GetComponent <TargetingControl> () != null)
+			{
+				targeting.objectComp.SetActive (true);
 			}
 		}
 	
@@ -173,6 +177,7 @@ public class ChoicePanel : MonoBehaviour
 			return;
 
 		//Now do the actual upgrade thingamajig.  
+		currentlySelected.GetComponent <TargetingControl> ().ImproveTargeting();
 	}
 
 	public void OnShieldingChosen()
@@ -190,7 +195,7 @@ public class ChoicePanel : MonoBehaviour
 			return;
 
 		//Now do the actual upgrade thingamajig.  
-		currentlySelected.GetComponent <Directable> ().moveSpeed++;
+		currentlySelected.GetComponent <Directable> ().thrustPower *= 2;
 	}
 
 	public void OnFireSpeedChosen()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour 
 {
-	[SerializeField] private GameObject sosLogo = null, spaceStation = null, fleetShip = null, hazard = null;
+	[SerializeField] private GameObject sosLogo = null;
 
 	void Start()
 	{
@@ -19,14 +19,11 @@ public class GameController : MonoBehaviour
 		Destroy (instantiatedSOSLogo);
 		Debug.Log ("Destroyed logo after waiting for animation to complete");
 
-		//Here is where we would parse the attached data file to determine what the space station and the fleet would look like, but in this case, we'll just instantiate the number we need to debug.  
-		GameObject instantiatedSpaceStation = (GameObject) (Instantiate(spaceStation, Vector3.zero, Quaternion.identity));
+		//Create the fleet with the MASTERCREATOR after parsing the file which stores fleet data.  
+		GameObject createdSS = MasterCreator.instance.CreateNewSpaceStation(Vector3.zero);
+		MasterCreator.instance.CreateNewFleetShip (Vector3.zero, createdSS.GetComponent <Tappable> ());
 
-		//Here is where we would parse the attached data file to determine what sort of fleet the player has.  Instead, we'll just create two for the player for testing purposes.  
-		GameObject instantiatedFleetShip = (GameObject) (Instantiate(fleetShip, Vector3.zero, Quaternion.identity));
-		instantiatedFleetShip.GetComponent <OrbitOther> ().Orbit (instantiatedSpaceStation.transform);
-
-		//Instantiate an example hazard a little ways away.  
-		GameObject instantiatedHazard = (GameObject) (Instantiate(hazard, new Vector3(-100, 100, 0), Quaternion.identity));
+		//Now enable the hazard spawner and let's get some action going.  
+		HazardSpawner.instance.InitiateEnemySwarms();
 	}
 }

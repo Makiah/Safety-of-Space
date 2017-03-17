@@ -68,4 +68,44 @@ public class CameraMovement : MonoBehaviour
 			transform.position = new Vector3 (centeredOn.transform.position.x, centeredOn.transform.position.y, transform.position.z);
 		}
 	}
+
+	/********* GESTURE CONTROLS ********/
+	[SerializeField] private float scrollSpeed = 1;
+	[SerializeField] private bool reverseScroll = false;
+
+	private Vector3 dragOrigin;
+	[SerializeField] private float dragSpeed = 1;
+	void LateUpdate()
+	{
+		if (!IsCenteredOn ())
+		{
+			if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor ||
+				Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer)
+			{
+				//Scrolling zoom.  
+				float delta = Input.GetAxis ("Mouse ScrollWheel");
+				if (delta != 0)
+					transform.position = transform.position + new Vector3 (0, 0, (reverseScroll ? -1 : 1) * scrollSpeed * delta);
+
+				if (transform.position.z > 0)
+					transform.position = new Vector3 (transform.position.x, transform.position.y, 0);
+
+				//Dragging capabilities.  
+				if (Input.GetMouseButtonDown (0))
+				{
+					dragOrigin = Input.mousePosition;
+					return;
+				}
+
+				if (!Input.GetMouseButton (0))
+					return;
+
+				Vector3 pos = Camera.main.ScreenToViewportPoint (Input.mousePosition - dragOrigin);
+				Vector3 move = new Vector3 (-1 * pos.x * dragSpeed * -transform.position.z, -1 * pos.y * dragSpeed * -transform.position.z, 0);
+				transform.Translate (move, Space.World);  
+
+				dragOrigin = Input.mousePosition; //Prevent constant movement. 
+			}
+		}
+	}
 }
