@@ -22,7 +22,7 @@ public class HazardSpawner : MonoBehaviour
 
 			Tappable target = GameObject.FindGameObjectWithTag ("Space Station").GetComponent <Tappable> ();
 
-			MasterCreator.instance.CreateNewAsteroidHazard (positionOfInstantiation, target);
+			MasterCreator.instance.CreateNewAsteroidHazard (positionOfInstantiation, target, 3);
 
 			yield return new WaitForSeconds (15);
 		}

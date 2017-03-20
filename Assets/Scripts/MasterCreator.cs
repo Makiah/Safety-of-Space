@@ -7,7 +7,7 @@ public class MasterCreator : MonoBehaviour
 	public static MasterCreator instance;
 	void Awake() {instance = this;}
 
-	[SerializeField] private GameObject fleetShip = null, spaceStation = null, asteroidHazard = null, fleetShipHazard = null, fleetShipBullet = null;
+	[SerializeField] public GameObject fleetShip = null, spaceStation = null, asteroidHazard = null, fleetShipHazard = null, fleetShipBullet = null;
 
 	public GameObject CreateNewFleetShip(Vector3 location, Tappable orbitAround)
 	{
@@ -22,10 +22,11 @@ public class MasterCreator : MonoBehaviour
 		return instantiatedStation;
 	}
 
-	public GameObject CreateNewAsteroidHazard(Vector3 location, Tappable target)
+	public GameObject CreateNewAsteroidHazard(Vector3 location, Tappable target, float speedOfMovement)
 	{
 		GameObject instantiatedAsteroidHazard = (GameObject)(Instantiate (asteroidHazard, location, Quaternion.identity));
-		instantiatedAsteroidHazard.GetComponent <Directable> ().DirectTo (target);
+		Vector2 diff = target.transform.position - instantiatedAsteroidHazard.transform.position;
+		instantiatedAsteroidHazard.GetComponent <Rigidbody2D> ().velocity = diff.normalized * speedOfMovement;
 		return null;
 	}
 

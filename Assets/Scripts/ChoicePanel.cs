@@ -45,12 +45,16 @@ public class ChoicePanel : MonoBehaviour
 		choiceArray = new Choice[] {targeting, shielding, moveSpeed, fireSpeed, fireDamage, directTo};
 
 		DisableAllActions ();
+
+		NewPurchaseController.instance.SetState (false);
 	}
 
 	private void DisableAllActions()
 	{
 		foreach (Choice choice in choiceArray)
 			choice.objectComp.SetActive (false);
+		
+		NewPurchaseController.instance.SetState (false);
   	}
 
 	private void UpdateUpgradeCosts()
@@ -149,6 +153,11 @@ public class ChoicePanel : MonoBehaviour
 		if (other.gameObject.GetComponent <Directable> () != null)
 		{
 			directTo.objectComp.SetActive (true);
+		}
+
+		if (other.gameObject.CompareTag ("Space Station"))
+		{
+			NewPurchaseController.instance.SetState (true);
 		}
 	}
 
