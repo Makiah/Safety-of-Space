@@ -92,7 +92,7 @@ public class ChoicePanel : MonoBehaviour
 			{
 				CameraMovement.instance.Decenter ();
 				DisableAllActions ();
-				UserConsole.instance.Output ("");
+				UserConsole.instance.Clear();
 				currentlyDirecting = false;
 				currentlySelected = null;
 			}
@@ -107,10 +107,14 @@ public class ChoicePanel : MonoBehaviour
 			{
 				currentlySelected.GetComponent <Directable> ().DirectTo (other);
 				currentlyDirecting = false;
-				UserConsole.instance.Output ("");
+				UserConsole.instance.Clear ();
 				currentlySelected = null;
+				return;
 			}
-			return;
+			else
+			{
+				DisableAllActions ();
+			}
 		}
 
 		//Zoom in on the item.  
@@ -167,12 +171,18 @@ public class ChoicePanel : MonoBehaviour
 	{
 		//Make sure that this component can be upgraded (hasn't reached max upgrades.  
 		if (currentlySelected.GetComponent <Upgradeable> ().upgradeSelections [choice] >= currentlySelected.GetComponent <Upgradeable> ().maxUpgradesForItem [choice])
+		{
+			UserConsole.instance.Output ("Already fully upgraded!", Color.red, 1);
 			return false;
+		}
 
 		//Determine the cost and make sure that the purchase can be made before making it.  Then update the cost of the new upgrade.  
 		int cost = int.Parse(choiceArray[choice].textComp.text);
 		if (!ResourceController.instance.ChangeBy (-cost))
+		{
+			UserConsole.instance.Output ("Insufficient funds!", Color.red, 1);
 			return false;
+		}
 		currentlySelected.GetComponent <Upgradeable> ().upgradeSelections [choice]++;
 		UpdateUpgradeCosts ();
 		UpdateUpgradeSliders ();
@@ -229,7 +239,7 @@ public class ChoicePanel : MonoBehaviour
 	public void OnDirectToChosen()
 	{
 		DisableAllActions ();
-		UserConsole.instance.Output ("Choose object to direct to");
+		UserConsole.instance.Output ("Choose object to direct to", Color.green, 3);
 		CameraMovement.instance.Decenter ();
 		currentlyDirecting = true;
 	}

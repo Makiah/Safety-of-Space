@@ -31,7 +31,7 @@ public class Damageable : MonoBehaviour
 	{
 		currentHealth -= damage / armorStrength;
 
-		Vector3 forceToBeApplied = (rb2d.velocity - otherRigidbody.velocity * otherRigidbody.mass) / rb2d.mass;
+		Vector3 forceToBeApplied = 20 * (otherRigidbody.velocity - rb2d.velocity);
 
 		rb2d.AddForce (forceToBeApplied);
 

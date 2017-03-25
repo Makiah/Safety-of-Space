@@ -11,7 +11,7 @@ public class MasterCreator : MonoBehaviour
 
 	public GameObject CreateNewFleetShip(Vector3 location, Tappable orbitAround)
 	{
-		GameObject instantiatedShip = (GameObject)(Instantiate (fleetShip, Vector3.zero, Quaternion.identity));
+		GameObject instantiatedShip = (GameObject)(Instantiate (fleetShip, Vector2.zero + Random.insideUnitCircle, Quaternion.identity));
 		instantiatedShip.GetComponent <OrbitOther> ().Orbit (orbitAround.transform);
 		return instantiatedShip;
 	}

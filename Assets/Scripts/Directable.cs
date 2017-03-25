@@ -73,6 +73,6 @@ public class Directable : MonoBehaviour
 
 	public bool IsBeingDirected()
 	{
-		return moveToCoroutine == null;
+		return targetDestination != null;
 	}
 }

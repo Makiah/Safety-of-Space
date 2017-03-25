@@ -33,12 +33,13 @@ public class NewPurchaseController : MonoBehaviour
 		{
 			case 1: 
 				chosenSprite = MasterCreator.instance.fleetShip.GetComponent <SpriteRenderer> ().sprite;
+				costOfItem = 10;
 				instantiatedPanel.GetComponent <Button> ().onClick.AddListener (
 					delegate { 
-						MasterCreator.instance.CreateNewFleetShip (Vector3.zero, GameObject.FindGameObjectWithTag ("Space Station").GetComponent <Tappable> ()); 
+						if (ResourceController.instance.ChangeBy(-costOfItem))
+							MasterCreator.instance.CreateNewFleetShip (Vector3.zero, GameObject.FindGameObjectWithTag ("Space Station").GetComponent <Tappable> ()); 
 					}
 				);
-				costOfItem = 10;
 				break;
 		}
 

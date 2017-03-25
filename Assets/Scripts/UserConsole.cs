@@ -15,8 +15,16 @@ public class UserConsole : MonoBehaviour
 		userConsole = GetComponent <Text> ();
 	}
 
-	public void Output(string output)
+	public void Output(string output, Color color, float time)
 	{
+		userConsole.color = color;
 		userConsole.text = output;
+		Invoke ("Clear", time);
+	}
+
+	public void Clear()
+	{
+		userConsole.color = Color.white;
+		userConsole.text = "";
 	}
 }
