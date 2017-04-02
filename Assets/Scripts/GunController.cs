@@ -7,8 +7,11 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour 
 {
-	public float fireDelay = 1, fireRange = 1, fireDamage = 1, fireForce = 1;
-	[SerializeField] private GameObject firePrefab;
+	//Public because it can be modified by both upgrades and the UI.  
+	public float fireDelay = 1, fireRange = 10, fireDamage = 1, fireForce = 500;
+	[SerializeField] private Sprite customBulletImage = null;
+	[SerializeField] private GameObject bulletPrefab = null;
+	[SerializeField] private bool enableTrailOnBullet = true, enableRocketExhaustOnBullet = true;
 	private Directable directableComp;
 	private Transform rangeTransform, fireTransform;
 
@@ -63,13 +66,17 @@ public class GunController : MonoBehaviour
 
 						if (damageableComp != null)
 						{
-							GameObject instantiatedPrefab = (GameObject) (Instantiate (firePrefab, fireTransform.position, Quaternion.identity));
-							if (firePrefab.GetComponent <Rigidbody2D> () != null)
+							GameObject instantiatedPrefab = (GameObject) (Instantiate (bulletPrefab, fireTransform.position, Quaternion.identity));
+							instantiatedPrefab.GetComponent <SpriteRenderer> ().sprite = customBulletImage;
+							instantiatedPrefab.GetComponent <TrailRenderer> ().enabled = enableTrailOnBullet;
+							instantiatedPrefab.transform.GetChild (0).GetComponent <SpriteRenderer> ().enabled = enableRocketExhaustOnBullet;
+
+							if (bulletPrefab.GetComponent <Rigidbody2D> () != null)
 							{
 								Vector2 diff = damageableComp.gameObject.transform.position - transform.position;
 								instantiatedPrefab.transform.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90);
 								instantiatedPrefab.GetComponent <Rigidbody2D> ().AddRelativeForce(new Vector3 (0, fireForce, 0));
-								instantiatedPrefab.GetComponent <DamageOnContact> ().SetDamage (fireDamage);
+								instantiatedPrefab.GetComponent <ExplodeOnContactWithEnemy> ().SetDamage (fireDamage);
 							}
 						}
 					}

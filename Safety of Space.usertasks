@@ -1,6 +1,11 @@
 <ListOfTask>
-  <Task file="" description="Create field of vision in which the player is restricted to look (centered on the space station)" />
+  <Task file="" description="Create field of vision in which the player is restricted to look (centered on the space station)" priority="Low" />
   <Task file="" description="Create spawn controls that initialize consistently more difficult levels, at the edge of the player's field of vision.  " />
-  <Task file="" description="Create upgrade menu (prelim)" />
-  <Task file="" description="Create radar.  " />
+  <Task file="" description="Create radar widget for incoming hazards.  " />
+  <Task file="" description="Make explosions more graphic (lame right now)" />
+  <Task file="" description="Provide additional ships for purchase.  " />
+  <Task file="" description="Make de-assigned directables orbit the nearest space stations.  " />
+  <Task file="" description="Make asteroids provide $$" />
+  <Task file="" description="Make space stations available for purchase.  " />
+  <Task file="" description="Give space ships life bars and auto-replenish health near space stations.  (Difficult to accomplish so low pressure)" priority="Low" />
 </ListOfTask>
