@@ -27,12 +27,13 @@ public class TargetingControl : MonoBehaviour
 		}
 	}
 
+	//Automatically checks the state of the directable component and gives it new instructions depending on the state of the directable.  
 	private IEnumerator AutoTarget()
 	{
-		Debug.Log ("Started coroutine");
 		while (true)
 		{
-			if (!directableComp.IsBeingDirected ())
+			//If the directable is attempting to return to the space station, give it new orders.  
+			if (directableComp.state == Directable.DirectableState.MovingToSpaceStation || directableComp.state == Directable.DirectableState.OrbitingSpaceStation)
 			{
 				//Find closest enemy on the OPPOSITE battle side.  
 				BattleSide[] hazards = GameObject.FindObjectsOfType <BattleSide> ();
@@ -56,8 +57,7 @@ public class TargetingControl : MonoBehaviour
 				//Now direct to the nearest hazard found.  
 				if (closestHazard != null)
 				{
-					directableComp.DirectTo (closestHazard.GetComponent <Tappable> ());
-					Debug.Log ("Directing to " + closestHazard.gameObject.name);
+					directableComp.DirectTo (closestHazard.GetComponent <Tappable> ().transform);
 				}
 			}
 

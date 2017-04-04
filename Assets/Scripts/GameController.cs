@@ -21,7 +21,7 @@ public class GameController : MonoBehaviour
 
 		//Create the fleet with the MASTERCREATOR after parsing the file which stores fleet data.  
 		GameObject createdSS = MasterCreator.instance.CreateNewSpaceStation(Vector3.zero);
-		MasterCreator.instance.CreateNewFleetShip (Vector3.zero, createdSS.GetComponent <Tappable> ());
+		MasterCreator.instance.CreateNewFleetShip (Vector3.zero, createdSS.GetComponent <Tappable> ().transform);
 
 		//Now enable the hazard spawner and let's get some action going.  
 		HazardSpawner.instance.InitiateEnemySwarms();

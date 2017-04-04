@@ -105,7 +105,7 @@ public class ChoicePanel : MonoBehaviour
 		{
 			if (currentlyDirecting)
 			{
-				currentlySelected.GetComponent <Directable> ().DirectTo (other);
+				currentlySelected.GetComponent <Directable> ().DirectTo (other.transform);
 				currentlyDirecting = false;
 				UserConsole.instance.Clear ();
 				currentlySelected = null;

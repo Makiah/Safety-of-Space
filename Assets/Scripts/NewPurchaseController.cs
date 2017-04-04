@@ -37,7 +37,7 @@ public class NewPurchaseController : MonoBehaviour
 				instantiatedPanel.GetComponent <Button> ().onClick.AddListener (
 					delegate { 
 						if (ResourceController.instance.ChangeBy(-costOfItem))
-							MasterCreator.instance.CreateNewFleetShip (Vector3.zero, GameObject.FindGameObjectWithTag ("Space Station").GetComponent <Tappable> ()); 
+							MasterCreator.instance.CreateNewFleetShip (Vector3.zero, GameObject.FindGameObjectWithTag ("Space Station").GetComponent <Tappable> ().transform); 
 					}
 				);
 				break;

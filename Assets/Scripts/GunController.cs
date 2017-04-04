@@ -52,7 +52,7 @@ public class GunController : MonoBehaviour
 		{
 			if (directableComp != null)
 			{
-				if (directableComp.targetDestination != null)
+				if (directableComp.state == Directable.DirectableState.TrackingEnemy)
 				{
 					RaycastHit2D[] linecastResults = Physics2D.LinecastAll (transform.position, rangeTransform.position, 1 << LayerMask.NameToLayer("Interactable"));
 					if (linecastResults != null)

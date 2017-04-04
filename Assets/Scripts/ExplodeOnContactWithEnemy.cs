@@ -32,6 +32,9 @@ public class ExplodeOnContactWithEnemy : MonoBehaviour
 				createdExplosion.GetComponent <SpriteRenderer> ().sprite = explosionSprite;
 				createdExplosion.AddComponent <SelfDestruct> ();
 				createdExplosion.GetComponent <SelfDestruct> ().InSeconds (1);
+
+				if (GetComponent <ProvideCashOnDeath> () != null)
+					GetComponent <ProvideCashOnDeath> ().OnDeath ();
 			}
 			else
 			{

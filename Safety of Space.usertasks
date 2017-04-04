@@ -8,4 +8,5 @@
   <Task file="" description="Make asteroids provide $$" />
   <Task file="" description="Make space stations available for purchase.  " />
   <Task file="" description="Give space ships life bars and auto-replenish health near space stations.  (Difficult to accomplish so low pressure)" priority="Low" />
+  <Task file="" description="Maybe make some method which is able to take a generic array and return the nearest Transform object?" />
 </ListOfTask>

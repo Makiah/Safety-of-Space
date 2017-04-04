@@ -9,11 +9,17 @@ public class MasterCreator : MonoBehaviour
 
 	[SerializeField] public GameObject fleetShip = null, spaceStation = null, asteroidHazard = null, fleetShipHazard = null, fleetShipBullet = null;
 
-	public GameObject CreateNewFleetShip(Vector3 location, Tappable orbitAround)
+	public GameObject CreateNewFleetShip(Vector3 location, Transform orbitAround)
 	{
 		GameObject instantiatedShip = (GameObject)(Instantiate (fleetShip, Vector2.zero + Random.insideUnitCircle, Quaternion.identity));
-		instantiatedShip.GetComponent <OrbitOther> ().Orbit (orbitAround.transform);
+		instantiatedShip.GetComponent <Directable> ().DirectTo (orbitAround);
+		StartCoroutine(EnableTrailRendererOnFleetShipAfterDelay(instantiatedShip.GetComponent <TrailRenderer> ())); //Enable it AFTERWARD because then it is in the correct position.  
 		return instantiatedShip;
+	}
+	private IEnumerator EnableTrailRendererOnFleetShipAfterDelay(TrailRenderer trailRenderer)
+	{
+		yield return new WaitForSeconds (1);
+		trailRenderer.enabled = true;
 	}
 
 	public GameObject CreateNewSpaceStation(Vector3 location)
@@ -30,7 +36,7 @@ public class MasterCreator : MonoBehaviour
 		return null;
 	}
 
-	public GameObject CreateNewFleetShipHazard(Vector3 location, Tappable target)
+	public GameObject CreateNewFleetShipHazard(Vector3 location, Transform target)
 	{
 		GameObject instantiatedFleetShipHazard = (GameObject)(Instantiate (fleetShipHazard, Vector3.zero, Quaternion.identity));
 		instantiatedFleetShipHazard.GetComponent <Directable> ().DirectTo (target);

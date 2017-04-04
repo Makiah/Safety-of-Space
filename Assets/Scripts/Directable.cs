@@ -4,40 +4,48 @@ using UnityEngine;
 
 [RequireComponent(typeof(BattleSide))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class Directable : MonoBehaviour 
+public class Directable : OrbitSpaceStation 
 {
+	//The states that the Directable can be doing.  
+	public enum DirectableState { TrackingEnemy, MovingToSpaceStation, OrbitingSpaceStation }
+	public DirectableState state;
 	[SerializeField] public float thrustPower = 2, maxSpeed = 15, stopDistance = 2;
 
-	private IEnumerator moveToCoroutine = null;
-
-	[HideInInspector] public Tappable targetDestination; //As unnecessary as this may seem, keep it in since it is used by GunController.  
-
+	//Get components required.  
 	private Rigidbody2D rb2d;
-
-	void Awake()
+	protected override void Awake()
 	{
 		rb2d = GetComponent <Rigidbody2D> ();
+		FindAndMoveTowardNearestSpaceStation ();
 	}
 
-	public void DirectTo (Tappable target)
+	//The grunt work of directing the object to some transform.  
+	private IEnumerator directToCoroutine = null;
+	public void DirectTo (Transform target)
 	{
-		if (GetComponent <OrbitOther> () != null)
-			GetComponent <OrbitOther> ().Deorbit ();
+		//Clear the existing coroutines.  
+		if (orbitCoroutine != null)
+			StopCoroutine (orbitCoroutine);
 
-		if (moveToCoroutine != null)
-		{
-			targetDestination = null;
-			StopCoroutine (moveToCoroutine);
-		}
+		if (directToCoroutine != null)
+			StopCoroutine (directToCoroutine);
 
+		//Set new location.  
 		targetDestination = target;
 
-		moveToCoroutine = DirectToCoroutine ();
-		StartCoroutine (moveToCoroutine);
-	}
+		//Determine how the ship will react upon arrival.  
+		if (targetDestination.gameObject.tag.Equals ("Space Station"))
+			state = DirectableState.MovingToSpaceStation;
+		else
+			state = DirectableState.TrackingEnemy;
 
+		//Start the coroutine.  
+		directToCoroutine = DirectToCoroutine ();
+		StartCoroutine (directToCoroutine);
+	}
 	private IEnumerator DirectToCoroutine()
 	{
+		//While the other object has not been destroyed.  
 		while (targetDestination != null)
 		{
 			//Move based on calculated values.  
@@ -50,18 +58,16 @@ public class Directable : MonoBehaviour
 				Vector2 thrustVector = diff.normalized * thrustPower;
 
 				if ((rb2d.velocity + thrustVector).magnitude <= maxSpeed)
-				{
 					rb2d.AddForce (thrustVector);
-				}
 				else
-				{
 					rb2d.velocity = (rb2d.velocity + thrustVector).normalized * maxSpeed;
-				}
 			}
 			else
 			{
-				
-				rb2d.velocity *= 0.95f;
+				if (state == DirectableState.TrackingEnemy)
+					rb2d.velocity *= 0.95f; //Diminish the velocity by some factor.  
+				else
+					BeginToOrbit (targetDestination);
 			}
 
 			//Update heading regardless of distance from ideal position.  
@@ -69,10 +75,44 @@ public class Directable : MonoBehaviour
 
 			yield return null;
 		}
+
+		//Upon reaching the destination successfully, return home by finding the nearest space station.  
+		FindAndMoveTowardNearestSpaceStation();
 	}
 
-	public bool IsBeingDirected()
+	private void FindAndMoveTowardNearestSpaceStation()
 	{
-		return targetDestination != null;
+		//Find the nearest space station.  
+		GameObject[] spaceStations = GameObject.FindGameObjectsWithTag("Space Station");
+
+		GameObject nearestSpaceStation = null;
+		float leastDistance = float.MaxValue;
+		foreach (GameObject spaceStation in spaceStations)
+		{
+			float distance = Vector2.Distance (spaceStation.transform.position, transform.position);
+			if (distance < leastDistance)
+			{
+				leastDistance = distance;
+				nearestSpaceStation = spaceStation;
+			}
+		}
+
+		//Start moving toward this object.  
+		DirectTo(nearestSpaceStation.transform);
+
+		//Set the appropriate state.  
+		state = DirectableState.MovingToSpaceStation;
+  	}
+
+	protected override void BeginToOrbit(Transform someSpaceStation)
+	{
+		//End the other coroutine.  
+		StopCoroutine (directToCoroutine);
+
+		//Actually DO the thing.  
+		base.BeginToOrbit (someSpaceStation);
+
+		//Set the state appropriately.  
+		state = DirectableState.OrbitingSpaceStation;
 	}
 }
