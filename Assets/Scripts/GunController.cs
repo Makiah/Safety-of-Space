@@ -54,19 +54,19 @@ public class GunController : MonoBehaviour
 			{
 				if (directableComp.state == Directable.DirectableState.TrackingEnemy)
 				{
-					RaycastHit2D[] linecastResults = Physics2D.LinecastAll (transform.position, rangeTransform.position, 1 << LayerMask.NameToLayer("Interactable"));
+					RaycastHit2D[] linecastResults = Physics2D.LinecastAll (transform.position, rangeTransform.position, 1 << LayerMask.NameToLayer ("Interactable"));
 					if (linecastResults != null)
 					{
 						Damageable damageableComp = null;
 						//Search through to find the one being directed to, and determine whether it is on the opposing side.  
 						foreach (RaycastHit2D hit in linecastResults)
-							if (hit.collider.gameObject.GetComponent <Tappable> () == directableComp.targetDestination)
+							if (hit.collider.gameObject.transform == directableComp.targetDestination)
 								if (GetComponent <BattleSide> ().side != directableComp.targetDestination.gameObject.GetComponent <BattleSide> ().side)
 									damageableComp = hit.collider.gameObject.GetComponent <Damageable> ();
 
 						if (damageableComp != null)
 						{
-							GameObject instantiatedPrefab = (GameObject) (Instantiate (bulletPrefab, fireTransform.position, Quaternion.identity));
+							GameObject instantiatedPrefab = (GameObject)(Instantiate (bulletPrefab, fireTransform.position, Quaternion.identity));
 							instantiatedPrefab.GetComponent <SpriteRenderer> ().sprite = customBulletImage;
 							instantiatedPrefab.GetComponent <TrailRenderer> ().enabled = enableTrailOnBullet;
 							instantiatedPrefab.transform.GetChild (0).GetComponent <SpriteRenderer> ().enabled = enableRocketExhaustOnBullet;
@@ -74,12 +74,16 @@ public class GunController : MonoBehaviour
 							if (bulletPrefab.GetComponent <Rigidbody2D> () != null)
 							{
 								Vector2 diff = damageableComp.gameObject.transform.position - transform.position;
-								instantiatedPrefab.transform.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg - 90);
-								instantiatedPrefab.GetComponent <Rigidbody2D> ().AddRelativeForce(new Vector3 (0, fireForce, 0));
+								instantiatedPrefab.transform.localEulerAngles = new Vector3 (0, 0, Mathf.Atan2 (diff.y, diff.x) * Mathf.Rad2Deg - 90);
+								instantiatedPrefab.GetComponent <Rigidbody2D> ().AddRelativeForce (new Vector3 (0, fireForce, 0));
 								instantiatedPrefab.GetComponent <ExplodeOnContactWithEnemy> ().SetDamage (fireDamage);
 							}
 						}
 					}
+				}
+				else
+				{
+					Debug.Log ("Not trackin enemy!");
 				}
 			}
 
