@@ -17,7 +17,10 @@ public class GameController : MonoBehaviour
 		GameObject instantiatedSOSLogo = (GameObject)(Instantiate (sosLogo, Vector3.zero, Quaternion.identity));
 		yield return new WaitForSeconds(3);
 		Destroy (instantiatedSOSLogo);
-		Debug.Log ("Destroyed logo after waiting for animation to complete");
+
+		//Enable the user to create their space station. 
+		SquadSelectionManager.instance.SetState (false);
+		ConstructionController.instance.SetState (true);
 
 		//Create the fleet with the MASTERCREATOR after parsing the file which stores fleet data.  
 		GameObject createdSS = MasterCreator.instance.CreateNewSpaceStation(Vector3.zero);

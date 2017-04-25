@@ -28,11 +28,13 @@ public class MasterCreator : MonoBehaviour
 		return instantiatedStation;
 	}
 
-	public GameObject CreateNewAsteroidHazard(Vector2 location, Tappable target, float speedOfMovement)
+	public GameObject CreateNewAsteroidHazard(Vector2 location, Tappable target, float speedOfMovement, float health)
 	{
 		GameObject instantiatedAsteroidHazard = (GameObject)(Instantiate (asteroidHazard, location, Quaternion.identity));
 		Vector2 diff = target.transform.position - instantiatedAsteroidHazard.transform.position;
 		instantiatedAsteroidHazard.GetComponent <Rigidbody2D> ().velocity = diff.normalized * speedOfMovement;
+		instantiatedAsteroidHazard.transform.localScale = Vector3.one * (health / 10.0f);
+		instantiatedAsteroidHazard.GetComponent <Damageable> ().maxHealth = health;
 		return instantiatedAsteroidHazard;
 	}
 
@@ -49,9 +51,11 @@ public class MasterCreator : MonoBehaviour
 		return instantiatedBullet;
 	}
 
-	public GameObject CreateExplosion(Vector2 location)
+	public GameObject CreateExplosion(Vector2 location, Sprite explosionSprite, float explosionDuration)
 	{
 		GameObject instantiatedExplosion = (GameObject)(Instantiate (explosion, location, Quaternion.identity));
+		instantiatedExplosion.GetComponent <SpriteRenderer> ().sprite = explosionSprite;
+		instantiatedExplosion.GetComponent <SelfDestruct> ().InSeconds (explosionDuration);
 		return instantiatedExplosion;
 	}
 }

@@ -37,6 +37,9 @@ public class Damageable : MonoBehaviour
 
 		if (currentHealth <= 0)
 		{
+			if (GetComponent <ProvideCashOnDeath> () != null)
+				GetComponent <ProvideCashOnDeath> ().OnDeath ();
+
 			Destroy (gameObject);
 			Destroy (healthBar.gameObject);
 		}

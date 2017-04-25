@@ -8,11 +8,11 @@ public class SquadSelectionManager : MonoBehaviour
 	public static SquadSelectionManager instance;
 	void Awake() {instance = this;}
 
-	[SerializeField] private GameObject squadSelectablePrefab = null;
+	[SerializeField] private GameObject buttonPrefab = null;
 
 	public void Add(SquadSelectable squadSelectable)
 	{
-		GameObject createdPanel = (GameObject)(Instantiate (squadSelectablePrefab, transform.GetChild(0).GetChild(0), false));
+		GameObject createdPanel = (GameObject)(Instantiate (buttonPrefab, transform.GetChild(0).GetChild(0).GetChild(0), false));
 
 		//Change the image so that it shows the correct item.  
 		createdPanel.GetComponent <Image> ().sprite = squadSelectable.GetComponent <SpriteRenderer> ().sprite;
@@ -24,5 +24,10 @@ public class SquadSelectionManager : MonoBehaviour
 				ChoicePanel.instance.InitializeWith (squadSelectable.GetComponent <Tappable> ()); 
 			}
 		);
+	}
+
+	public void SetState(bool active)
+	{
+		gameObject.SetActive (active);
 	}
 }

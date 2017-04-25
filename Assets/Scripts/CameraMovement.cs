@@ -18,6 +18,12 @@ public class CameraMovement : MonoBehaviour
 		return centeredOn != null;
 	}
 
+	private bool gestureControlsEnabled = true;
+	public void SetGestureControlsState(bool state)
+	{
+		gestureControlsEnabled = state;
+	}
+
 	public void CenterOn(Tappable other)
 	{
 		if (lerpToZCoroutine != null)
@@ -61,14 +67,6 @@ public class CameraMovement : MonoBehaviour
 		centeredOn = null;
 	}
 
-	void Update()
-	{
-		if (centeredOn != null)
-		{
-			transform.position = new Vector3 (centeredOn.transform.position.x, centeredOn.transform.position.y, transform.position.z);
-		}
-	}
-
 	/********* GESTURE CONTROLS ********/
 	[SerializeField] private float scrollSpeed = 1;
 	[SerializeField] private bool reverseScroll = false;
@@ -77,10 +75,10 @@ public class CameraMovement : MonoBehaviour
 	[SerializeField] private float dragSpeed = 1;
 	void LateUpdate()
 	{
-		if (!IsCenteredOn ())
+		if (!IsCenteredOn () && gestureControlsEnabled)
 		{
 			if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor ||
-				Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer)
+			    Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer)
 			{
 				//Scrolling zoom.  
 				float delta = Input.GetAxis ("Mouse ScrollWheel");
@@ -106,6 +104,11 @@ public class CameraMovement : MonoBehaviour
 
 				dragOrigin = Input.mousePosition; //Prevent constant movement. 
 			}
+		}
+
+		if (IsCenteredOn())
+		{
+			transform.position = new Vector3 (centeredOn.transform.position.x, centeredOn.transform.position.y, transform.position.z);
 		}
 	}
 }
