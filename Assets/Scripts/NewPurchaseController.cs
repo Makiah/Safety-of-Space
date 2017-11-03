@@ -43,7 +43,7 @@ public class NewPurchaseController : MonoBehaviour
 				break;
 		}
 
-		instantiatedPanel.transform.FindChild("Item Icon").GetComponent <Image> ().sprite = chosenSprite;
-		instantiatedPanel.transform.FindChild ("Resource Cost").FindChild ("Text").GetComponent <Text> ().text = "" + costOfItem;
+		instantiatedPanel.transform.Find("Item Icon").GetComponent <Image> ().sprite = chosenSprite;
+		instantiatedPanel.transform.Find ("Resource Cost").Find ("Text").GetComponent <Text> ().text = "" + costOfItem;
 	}
 }

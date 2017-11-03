@@ -18,12 +18,12 @@ public class ChoicePanel : MonoBehaviour
 		public Choice(Transform other)
 		{
 			objectComp = other.gameObject;
-			if (other.FindChild("Upgrade") != null)
-				buttonComp = other.FindChild("Upgrade").GetComponent <Button> ();
-			if (other.FindChild("Text") != null)
-				textComp = other.FindChild("Text").GetComponent <Text> ();
-			if (other.FindChild("Slider") != null)
-				sliderComp = other.FindChild("Slider").GetComponent <Slider> ();
+			if (other.Find("Upgrade") != null)
+				buttonComp = other.Find("Upgrade").GetComponent <Button> ();
+			if (other.Find("Text") != null)
+				textComp = other.Find("Text").GetComponent <Text> ();
+			if (other.Find("Slider") != null)
+				sliderComp = other.Find("Slider").GetComponent <Slider> ();
 		}
 	}
 
@@ -34,12 +34,12 @@ public class ChoicePanel : MonoBehaviour
 	void Start()
 	{
 		//Get ALL references.  
-		targeting = new Choice(transform.FindChild("Targeting"));
-		moveSpeed = new Choice (transform.FindChild ("Move Speed"));
-		shielding = new Choice (transform.FindChild ("Shielding"));
-		fireSpeed = new Choice (transform.FindChild ("Fire Speed"));
-		fireDamage = new Choice (transform.FindChild ("Fire Damage"));
-		directTo = new Choice (transform.FindChild ("Direct To"));
+		targeting = new Choice(transform.Find("Targeting"));
+		moveSpeed = new Choice (transform.Find ("Move Speed"));
+		shielding = new Choice (transform.Find ("Shielding"));
+		fireSpeed = new Choice (transform.Find ("Fire Speed"));
+		fireDamage = new Choice (transform.Find ("Fire Damage"));
+		directTo = new Choice (transform.Find ("Direct To"));
 
 		//Create the array for future ease of coding.  
 		choiceArray = new Choice[] {targeting, shielding, moveSpeed, fireSpeed, fireDamage, directTo};
